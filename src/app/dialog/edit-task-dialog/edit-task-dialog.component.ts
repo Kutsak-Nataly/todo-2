@@ -15,13 +15,7 @@ import {Task} from '../../model/Task';
 // редактирование/создание задачи
 export class EditTaskDialogComponent implements OnInit {
 
-  constructor(
-      private dialogRef: MatDialogRef<EditTaskDialogComponent>, // // для возможности работы с текущим диалог. окном
-      @Inject(MAT_DIALOG_DATA) private data: [Task, string], // данные, которые передали в диалоговое окно
-      private dataHandler: DataHandlerService, // ссылка на сервис для работы с данными
-      private dialog: MatDialog // для открытия нового диалогового окна (из текущего) - например для подтверждения удаления
-  ) {
-  }
+  private tmpDate: Date;
 
   private categories: Category[];
   private priorities: Priority[];
@@ -30,12 +24,18 @@ export class EditTaskDialogComponent implements OnInit {
   private task: Task; // задача для редактирования/создания
 
   // сохраняем все значения в отдельные переменные
-  // сохраняем все значения в отдельные переменные
   // чтобы изменения не сказывались на самой задаче и можно было отменить изменения
   private tmpTitle: string;
   private tmpPriority: Priority;
   private tmpCategory: Category;
 
+  constructor(
+    private dialogRef: MatDialogRef<EditTaskDialogComponent>, // // для возможности работы с текущим диалог. окном
+    @Inject(MAT_DIALOG_DATA) private data: [Task, string], // данные, которые передали в диалоговое окно
+    private dataHandler: DataHandlerService, // ссылка на сервис для работы с данными
+    private dialog: MatDialog // для открытия нового диалогового окна (из текущего) - например для подтверждения удаления
+  ) {
+  }
 
   ngOnInit() {
     this.task = this.data[0]; // задача для редактирования/создания
@@ -47,6 +47,7 @@ export class EditTaskDialogComponent implements OnInit {
     this.tmpTitle = this.task.title;
     this.tmpPriority = this.task.priority;
     this.tmpCategory = this.task.category;
+    this.tmpDate = this.task.date;
 
     this.dataHandler.getAllCategories().subscribe( items => this.categories = items);
     this.dataHandler.getAllPriorities().subscribe( items => this.priorities = items);
@@ -60,6 +61,7 @@ export class EditTaskDialogComponent implements OnInit {
     this.task.title = this.tmpTitle;
     this.task.priority = this.tmpPriority;
     this.task.category = this.tmpCategory;
+    this.task.date = this.tmpDate;
 
 
     // передаем добавленную/измененную задачу в обработчик
