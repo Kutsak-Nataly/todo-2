@@ -10,73 +10,90 @@ import {Category} from "./model/Category";
 })
 export class AppComponent implements OnInit {
 
-    title = 'Todo';
-    tasks: Task[];
-    categories: Category[];
+  title = 'Todo';
+  tasks: Task[];
+  categories: Category[];
 
-    private selectedCategory: Category = null;
-
-
-    constructor(
-        private dataHandler: DataHandlerService, // фасад для работы с данными
-    ) {
-    }
-
-    ngOnInit(): void {
-        // this.dataHandler.getAllTasks().subscribe(tasks => this.tasks = tasks);
-        this.dataHandler.getAllCategories().subscribe(categories => this.categories = categories);
-
-        this.onSelectCategory(null); // показать все задачи
-
-    }
+  private selectedCategory: Category = null;
 
 
-    // изменение категории
-    private onSelectCategory(category: Category) {
+  constructor(
+    private dataHandler: DataHandlerService, // фасад для работы с данными
+  ) {
+  }
 
-        this.selectedCategory = category;
+  ngOnInit(): void {
+    // this.dataHandler.getAllTasks().subscribe(tasks => this.tasks = tasks);
+    this.dataHandler.getAllCategories().subscribe(categories => this.categories = categories);
 
-        this.dataHandler.searchTasks(
-            this.selectedCategory,
-            null,
-            null,
-            null
-        ).subscribe(tasks => {
-            this.tasks = tasks;
-        });
+    this.onSelectCategory(null); // показать все задачи
 
-    }
-
-    // обновление задачи
-    private onUpdateTask(task: Task) {
-
-        this.dataHandler.updateTask(task).subscribe(() => {
-            this.dataHandler.searchTasks(
-                this.selectedCategory,
-                null,
-                null,
-                null
-            ).subscribe(tasks => {
-                this.tasks = tasks;
-            });
-        });
-
-    }
-
-    // удаление задачи
-    private onDeleteTask(task: Task) {
-
-        this.dataHandler.deleteTask(task.id).subscribe(() => {
-            this.dataHandler.searchTasks(
-                this.selectedCategory,
-                null,
-                null,
-                null
-            ).subscribe(tasks => {
-                this.tasks = tasks;
-            });
-        });
+  }
 
 
-    }
+  // изменение категории
+  private onSelectCategory(category: Category) {
+
+    this.selectedCategory = category;
+
+    this.dataHandler.searchTasks(
+      this.selectedCategory,
+      null,
+      null,
+      null
+    ).subscribe(tasks => {
+      this.tasks = tasks;
+    });
+
+  }
+
+  // обновление задачи
+  private onUpdateTask(task: Task) {
+
+    this.dataHandler.updateTask(task).subscribe(() => {
+      this.dataHandler.searchTasks(
+        this.selectedCategory,
+        null,
+        null,
+        null
+      ).subscribe(tasks => {
+        this.tasks = tasks;
+      });
+    });
+
+  }
+
+  // удаление задачи
+  private onDeleteTask(task: Task) {
+
+    this.dataHandler.deleteTask(task.id).subscribe(() => {
+      this.dataHandler.searchTasks(
+        this.selectedCategory,
+        null,
+        null,
+        null
+      ).subscribe(tasks => {
+        this.tasks = tasks;
+      });
+    });
+  }
+
+  // удаление категории
+  private onDeleteCategory(category: Category) {
+    this.dataHandler.deleteCategory(category.id).subscribe(cat => {
+      this.selectedCategory = null; // открываем категорию "Все"
+      this.onSelectCategory(this.selectedCategory);
+    });
+  }
+
+  // обновлении категории
+  private onUpdateCategory(category: Category) {
+    this.dataHandler.updateCategory(category).subscribe(() => {
+      this.onSelectCategory(this.selectedCategory);
+    });
+  }
+
+
+
+
 }

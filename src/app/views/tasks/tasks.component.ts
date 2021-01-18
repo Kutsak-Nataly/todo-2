@@ -6,6 +6,8 @@ import {EditTaskDialogComponent} from '../../dialog/edit-task-dialog/edit-task-d
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {Task} from '../../model/Task';
+import {ConfirmDialogComponent} from '../../dialog/confirm-dialog/confirm-dialog.component';
+import {Category} from '../../model/Category';
 
 @Component({
     selector: 'app-tasks',
@@ -15,8 +17,8 @@ import {Task} from '../../model/Task';
 export class TasksComponent implements OnInit {
 
 
-  // поля для таблицы (те, что отображают данные из задачи - должны совпадать с названиями переменных класса)
-  private displayedColumns: string[] = ['color', 'id', 'title', 'date', 'priority', 'category'];
+  @Output()
+  selectCategory = new EventEmitter<Category>(); // нажали на категорию из списка задач
   private dataSource: MatTableDataSource<Task>; // контейнер - источник данных для таблицы
 
   // ссылки на компоненты таблицы
@@ -29,6 +31,8 @@ export class TasksComponent implements OnInit {
 
   @Output()
   updateTask = new EventEmitter<Task>();
+  // поля для таблицы (те, что отображают данные из задачи - должны совпадать с названиями переменных класса)
+  private displayedColumns: string[] = ['color', 'id', 'title', 'date', 'priority', 'category', 'operations', 'select'];
 
 
   private tasks: Task[];
@@ -57,9 +61,6 @@ export class TasksComponent implements OnInit {
   }
 
 
-  toggleTaskCompleted(task: Task) {
-    task.completed = !task.completed;
-  }
 
   // в зависимости от статуса задачи - вернуть цвет названия
   private getPriorityColor(task: Task): string {
@@ -157,6 +158,30 @@ export class TasksComponent implements OnInit {
     });
   }
 
+  // диалоговое окно подтверждения удаления
+  private openDeleteDialog(task: Task) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      maxWidth: '500px',
+      data: {dialogTitle: 'Подтвердите действие', message: `Вы действительно хотите удалить задачу: "${task.title}"?`},
+      autoFocus: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) { // если нажали ОК
+        this.deleteTask.emit(task);
+      }
+    });
+  }
+
+  private onToggleStatus(task: Task) {
+    task.completed = !task.completed;
+    this.updateTask.emit(task);
+  }
+
+
+  private onSelectCategory(category: Category) {
+    this.selectCategory.emit(category);
+  }
 
 
 }

@@ -69,9 +69,9 @@
       <ng-container matColumnDef="category">
         <th *matHeaderCellDef mat-header-cell mat-sort-header> Категория</th>
         <td (click)="!task.completed && task.category && onSelectCategory(task.category)" *matCellDef="let task"
-            [ngClass]="{'completed': task.completed, 'novalue': task.category == null, 'link': !task.completed && task.category}"
-
             class="col-category"
+
+            [ngClass]="{'completed': task.completed, 'novalue': task.category == null, 'link': !task.completed && task.category}"
 
 
             mat-cell
@@ -124,8 +124,10 @@
 
           </mat-checkbox>
 
+
         </td>
       </ng-container>
+
 
       <!--  заголовок таблицы-->
       <tr *matHeaderRowDef="displayedColumns; " mat-header-row></tr>
