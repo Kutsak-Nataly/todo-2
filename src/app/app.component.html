@@ -2,6 +2,7 @@
 
   <app-categories
     (selectCategory)="onSelectCategory($event)"
+
     [categories]="categories"
     [selectedCategory]="selectedCategory"></app-categories>
 
@@ -85,11 +86,16 @@
           <div class="col-12">
 
             <app-tasks
+              (filterByPriority)="onFilterTasksByPriority($event)"
               (deleteTask)="onDeleteTask($event)"
               (selectCategory)="onSelectCategory($event)"
+
+              (filterByStatus)="onFilterTasksByStatus($event)"
+              (filterByTitle)="onSearchTasks($event)"
               (updateTask)="onUpdateTask($event)"
 
               [tasks]="tasks"
+              [priorities]="priorities"
 
 
             ></app-tasks>
@@ -180,6 +186,12 @@
         <a class="btn btn-primary btn-block" href="https://www.creative-tim.com/product/material-dashboard"
            target="_blank">Free Download</a>
       </li>
+      <!-- <li class="header-title">Want more components?</li>
+          <li class="button-container">
+              <a href="https://www.creative-tim.com/product/material-dashboard-pro" target="_blank" class="btn btn-warning btn-block">
+                Get the pro version
+              </a>
+          </li> -->
       <li class="button-container">
         <a class="btn btn-default btn-block"
            href="https://demos.creative-tim.com/material-dashboard/docs/2.1/getting-started/introduction.html"
