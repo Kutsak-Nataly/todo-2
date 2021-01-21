@@ -1,6 +1,7 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {DatePipe} from '@angular/common';
 
+// преобразовывает дату в нужный текстовый формат
 @Pipe({
   name: 'taskDate'
 })
@@ -32,4 +33,3 @@ export class TaskDatePipe extends DatePipe implements PipeTransform {
   }
 
 }
-

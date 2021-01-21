@@ -1,10 +1,9 @@
-import {Task} from '../../../model/Task';
 import {Category} from '../../../model/Category';
 import {CommonDAO} from './CommonDAO';
 import {Priority} from '../../../model/Priority';
 import {Observable} from 'rxjs';
+import {Task} from '../../../model/Task';
 
-// специфичные методы для работы с задачами (которые не входят в обычный CRUD)
 export interface TaskDAO extends CommonDAO<Task> {
 
     // поиск задач по всем параметрам

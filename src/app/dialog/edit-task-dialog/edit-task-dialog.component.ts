@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog
 import {DataHandlerService} from '../../service/data-handler.service';
 import {Category} from '../../model/Category';
 import {Priority} from '../../model/Priority';
+import {OperType} from '../OperType';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
 import {Task} from '../../model/Task';
 
@@ -15,23 +16,24 @@ import {Task} from '../../model/Task';
 // редактирование/создание задачи
 export class EditTaskDialogComponent implements OnInit {
 
-  private tmpDate: Date;
+  private tmpCategory: Category;
 
   private categories: Category[];
   private priorities: Priority[];
 
   private dialogTitle: string; // заголовок окна
   private task: Task; // задача для редактирования/создания
+  private operType: OperType;
 
   // сохраняем все значения в отдельные переменные
   // чтобы изменения не сказывались на самой задаче и можно было отменить изменения
   private tmpTitle: string;
   private tmpPriority: Priority;
-  private tmpCategory: Category;
+  private tmpDate: Date;
 
   constructor(
     private dialogRef: MatDialogRef<EditTaskDialogComponent>, // // для возможности работы с текущим диалог. окном
-    @Inject(MAT_DIALOG_DATA) private data: [Task, string], // данные, которые передали в диалоговое окно
+    @Inject(MAT_DIALOG_DATA) private data: [Task, string, OperType], // данные, которые передали в диалоговое окно
     private dataHandler: DataHandlerService, // ссылка на сервис для работы с данными
     private dialog: MatDialog // для открытия нового диалогового окна (из текущего) - например для подтверждения удаления
   ) {
@@ -40,7 +42,7 @@ export class EditTaskDialogComponent implements OnInit {
   ngOnInit() {
     this.task = this.data[0]; // задача для редактирования/создания
     this.dialogTitle = this.data[1]; // текст для диалогового окна
-
+    this.operType = this.data[2]; // тип операции
 
     // инициализация начальных значений (записывам в отдельные переменные
     // чтобы можно было отменить изменения, а то будут сразу записываться в задачу)
@@ -49,8 +51,9 @@ export class EditTaskDialogComponent implements OnInit {
     this.tmpCategory = this.task.category;
     this.tmpDate = this.task.date;
 
-    this.dataHandler.getAllCategories().subscribe( items => this.categories = items);
-    this.dataHandler.getAllPriorities().subscribe( items => this.priorities = items);
+
+    this.dataHandler.getAllCategories().subscribe(items => this.categories = items);
+    this.dataHandler.getAllPriorities().subscribe(items => this.priorities = items);
 
   }
 
@@ -76,7 +79,7 @@ export class EditTaskDialogComponent implements OnInit {
   }
 
   // нажали Удалить
-  private delete() {
+  private delete(): void {
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       maxWidth: '500px',
@@ -95,13 +98,21 @@ export class EditTaskDialogComponent implements OnInit {
   }
 
   // нажали Выполнить (завершить) задачу
-  private complete() {
+  private complete(): void {
     this.dialogRef.close('complete');
 
   }
 
   // делаем статус задачи "незавершенным" (активируем)
-  private activate() {
+  private activate(): void {
     this.dialogRef.close('activate');
+  }
+
+  private canDelete(): boolean {
+    return this.operType === OperType.EDIT;
+  }
+
+  private canActivateDesactivate(): boolean {
+    return this.operType === OperType.EDIT;
   }
 }

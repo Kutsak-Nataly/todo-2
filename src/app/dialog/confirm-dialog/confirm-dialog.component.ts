@@ -13,8 +13,8 @@ export class ConfirmDialogComponent implements OnInit {
   private message: string;
 
   constructor(
-      private dialogRef: MatDialogRef<ConfirmDialogComponent>, // для работы с текущим диалог. окном
-      @Inject(MAT_DIALOG_DATA) private data: { dialogTitle: string, message: string } // данные, которые передали в диалоговое окно
+    private dialogRef: MatDialogRef<ConfirmDialogComponent>, // для работы с текущим диалог. окном
+    @Inject(MAT_DIALOG_DATA) private data: { dialogTitle: string, message: string } // данные, которые передали в диалоговое окно
   ) {
     this.dialogTitle = data.dialogTitle; // заголовок
     this.message = data.message; // сообщение
