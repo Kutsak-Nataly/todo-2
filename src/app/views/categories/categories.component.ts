@@ -12,12 +12,14 @@ import {OperType} from '../../dialog/OperType';
 })
 export class CategoriesComponent implements OnInit {
 
-  @Input()
-  categories: Category[];
 
   @Input()
   selectedCategory: Category;
 
+  // кол-во невыполненных задач всего
+  @Input()
+  uncompletedTotal: number;
+  private categoryMap: Map<Category, number>; // список всех категорий и кол-во активных задач
 
   // выбрали категорию из списка
   @Output()
@@ -39,10 +41,17 @@ export class CategoriesComponent implements OnInit {
   @Output()
   searchCategory = new EventEmitter<string>(); // передаем строку для поиска
 
+  @Input('categoryMap')
+  set setCategoryMap(categoryMap: Map<Category, number>) {
+    this.categoryMap = categoryMap;
+  }
+
 
   // для отображения иконки редактирования при наведении на категорию
   private indexMouseMove: number;
   private searchCategoryTitle: string; // текущее значение для поиска категорий
+
+  // категории с кол-вом активных задач для каждой из них
 
 
   constructor(

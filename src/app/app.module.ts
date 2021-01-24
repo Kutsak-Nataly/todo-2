@@ -30,7 +30,11 @@ import {AppComponent} from './app.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {PrioritiesComponent} from './views/priorities/priorities.component';
 import {TaskDatePipe} from './pipe/task-date.pipe';
+import {registerLocaleData} from '@angular/common';
+import localeRu from '@angular/common/locales/ru';
+import {SidebarModule} from 'ng-sidebar';
 
+registerLocaleData(localeRu, 'ru');
 @NgModule({
   declarations: [
     AppComponent,
@@ -66,7 +70,8 @@ import {TaskDatePipe} from './pipe/task-date.pipe';
     MatDatepickerModule,
     MatNativeDateModule,
     MatCheckboxModule,
-    ColorPickerModule
+    ColorPickerModule,
+    SidebarModule
   ],
   providers: [],
   entryComponents: [
