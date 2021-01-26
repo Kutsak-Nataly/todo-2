@@ -10,6 +10,7 @@ import {EditTaskDialogComponent} from '../../dialog/edit-task-dialog/edit-task-d
 import {OperType} from '../../dialog/OperType';
 import {ConfirmDialogComponent} from '../../dialog/confirm-dialog/confirm-dialog.component';
 import {EventEmitter} from '@angular/core';
+import {DeviceDetectorService} from 'ngx-device-detector';
 import {Task} from '../../model/Task';
 
 @Component({
@@ -21,8 +22,10 @@ export class TasksComponent implements OnInit {
 
   @Output()
   deleteTask = new EventEmitter<Task>(); // удаление задачи
+  @ViewChild(MatSort, {static: false}) private sort: MatSort;
   @Output()
   updateTask = new EventEmitter<Task>(); // обновление задачи
+
   @Output()
   selectCategory = new EventEmitter<Category>(); // нажали на категорию из списка задач
   @Output()
@@ -36,23 +39,27 @@ export class TasksComponent implements OnInit {
   // текущая выбранная категория (используется при создании новой задачи, чтобы эта категория была сразу выбрана)
   @Input()
   selectedCategory: Category;
-  @ViewChild(MatSort, {static: false}) private sort: MatSort;
   // ссылки на компоненты таблицы (должны присваиваться после обновления данных в таблице)
   @ViewChild(MatPaginator, {static: false}) private paginator: MatPaginator;
   private dataSource: MatTableDataSource<Task>; // контейнер - источник данных для таблицы
+  private isMobile: boolean;
+
   private tasks: Task[]; // задачи для отображения в таблице
-
-  constructor(
-    private dataHandler: DataHandlerService, // доступ к данным
-    private dialog: MatDialog, // работа с диалоговыми окнами (показать, закрыть)
-
-  ) {
-  }
 
   // поиск
   private searchTaskText: string; // текущее значение для поиска задач
   private selectedStatusFilter: boolean = null;   // по-умолчанию будут показываться задачи по всем статусам (решенные и нерешенные)
   private selectedPriorityFilter: Priority = null;   // по-умолчанию будут показываться задачи по всем приоритетам
+
+  constructor(
+    private dataHandler: DataHandlerService, // доступ к данным
+    private dialog: MatDialog, // работа с диалоговыми окнами (показать, закрыть)
+    private deviceService: DeviceDetectorService // для определения типа устройства
+  ) {
+
+    this.isMobile = this.deviceService.isMobile();
+
+  }
 
 
   // поля для таблицы (те, что отображают данные из задачи - должны совпадать с названиями переменных класса)
@@ -60,17 +67,17 @@ export class TasksComponent implements OnInit {
 
   private priorities: Priority[]; // список приоритетов (для фильтрации задач)
 
-  // все приоритеты (для фильтрации)
-  @Input('priorities')
-  set setPriorities(priorities: Priority[]) {
-    this.priorities = priorities;
-  }
-
   // текущие задачи для отображения на странице
   @Input('tasks')
   private set setTasks(tasks: Task[]) { // напрямую не присваиваем значения в переменную, только через @Input
     this.tasks = tasks;
     this.fillTable();
+  }
+
+  // все приоритеты (для фильтрации)
+  @Input('priorities')
+  set setPriorities(priorities: Priority[]) {
+    this.priorities = priorities;
   }
 
   ngOnInit() {
@@ -253,5 +260,14 @@ export class TasksComponent implements OnInit {
 
   }
 
+  // в зависимости от статуса задачи - вернуть фоноввый цвет
+  private getMobilePriorityBgColor(task: Task) {
+
+    if (task.priority != null && !task.completed) {
+      return task.priority.color;
+    }
+
+    return 'none';
+  }
 
 }

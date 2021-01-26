@@ -35,6 +35,8 @@ import localeRu from '@angular/common/locales/ru';
 import {SidebarModule} from 'ng-sidebar';
 
 registerLocaleData(localeRu, 'ru');
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -85,4 +87,5 @@ registerLocaleData(localeRu, 'ru');
   bootstrap: [AppComponent]
 })
 export class AppModule {
+  private static DeviceDetectorModule: any;
 }
